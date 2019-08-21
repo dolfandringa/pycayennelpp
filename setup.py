@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name='pycayennelpp',
-    version='1.3.0',
+    version='1.4.0',
     python_requires='>=3.4',
     description='Encoder and Decoder for CayenneLLP',
     long_description=readme(),
