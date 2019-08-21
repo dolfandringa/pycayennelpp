@@ -1,4 +1,5 @@
 import pytest
+from cayennelpp.utils import datetime_as_utc
 from datetime import datetime, timedelta
 from datetime import timezone as tz
 
@@ -130,14 +131,14 @@ def test_voltage_negative_val():
 
 def test_unix_time_datetime_without_tz():
     now = datetime.now()
-    utcnow = now.replace(microsecond=0).astimezone(tz.utc)
+    utcnow = datetime_as_utc(now.replace(microsecond=0))
     vol_buf = lpp_unix_time_to_bytes((now,))
     assert lpp_unix_time_from_bytes(vol_buf) == (utcnow,)
 
 
 def test_unix_time_datetime_with_tz():
     now = datetime.now(tz=tz(timedelta(hours=-5)))
-    utcnow = now.replace(microsecond=0).astimezone(tz.utc)
+    utcnow = datetime_as_utc(now.replace(microsecond=0))
     vol_buf = lpp_unix_time_to_bytes((now,))
     assert lpp_unix_time_from_bytes(vol_buf) == (utcnow,)
 

@@ -1,5 +1,7 @@
 from datetime import datetime
 from datetime import timezone as tz
+from .utils import datetime_as_utc
+
 try:
     import logging
 except ImportError:
@@ -162,7 +164,8 @@ def lpp_unix_time_to_bytes(data):
     buf = bytearray([0x00, 0x00, 0x00, 0x00])
     epoch = datetime.fromtimestamp(0, tz.utc)
     if isinstance(val, datetime):
-        val = val.replace(microsecond=0).astimezone(tz.utc)
+        val = datetime_as_utc(val.replace(microsecond=0))
+        # val = val.replace(microsecond=0).astimezone(tz.utc)
         if val < epoch:
             raise ValueError("Date/times before 1970-01-01 08:00 UTC"
                              "are not allowed")
