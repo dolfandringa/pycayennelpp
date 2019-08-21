@@ -27,6 +27,8 @@ from cayennelpp.lpp_type import (lpp_digital_io_to_bytes,
                                  lpp_voltage_from_bytes,
                                  lpp_unix_time_to_bytes,
                                  lpp_unix_time_from_bytes,
+                                 lpp_generic_to_bytes,
+                                 lpp_generic_from_bytes,
                                  get_lpp_type,
                                  LppType)
 
@@ -170,6 +172,31 @@ def test_unix_time_negative_val():
         # -4 years (-4*365*24*3600 seconds)
         buff = bytearray([0xf8, 0x7b, 0x32, 0x0])
         lpp_unix_time_from_bytes(buff)
+
+
+def test_generic():
+    val = 4294967295
+    vol_buf = lpp_generic_to_bytes((val,))
+    assert lpp_generic_from_bytes(vol_buf) == (val,)
+
+
+def test_generic_invalid_buf():
+    with pytest.raises(Exception):
+        lpp_generic_from_bytes(bytearray([0x00, 0x00, 0x00]))
+
+
+def test_generic_invalid_val():
+    with pytest.raises(Exception):
+        lpp_generic_to_bytes((0, 1))
+    with pytest.raises(ValueError):
+        # val exceeds 4 bytes
+        val = 4294967297
+        lpp_generic_to_bytes((val,))
+
+
+def test_generic_negative_val():
+    with pytest.raises(Exception):
+        lpp_generic_to_bytes((-1,))
 
 
 def test_presence():
