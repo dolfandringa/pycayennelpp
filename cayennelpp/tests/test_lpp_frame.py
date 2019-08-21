@@ -1,4 +1,6 @@
 import pytest
+from datetime import datetime
+from datetime import timezone as tz
 
 from cayennelpp.lpp_frame import LppFrame
 
@@ -73,6 +75,15 @@ def test_add_voltage(frame):
     frame.add_voltage(2, -25)
     with pytest.raises(Exception):
         frame.bytes()
+
+
+def test_add_unix_time(frame):
+    frame.add_unix_time(0, datetime.now(tz.utc))
+    frame.add_unix_time(1, datetime.fromtimestamp(0))
+    assert len(frame.data) == 2
+    assert frame.data[0].type == 133
+    assert frame.data[1].type == 133
+    frame.bytes()
 
 
 def test_add_temperature(frame):
